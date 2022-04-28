@@ -1,0 +1,13 @@
+[user]
+	name =
+	email =
+[color]
+	ui = auto
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	logs = log --oneline --branches --graph
+[core]
+	editor = vim

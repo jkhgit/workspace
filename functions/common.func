@@ -1,0 +1,44 @@
+#!/bin/bash
+set -e
+
+BACKUP_DIR=${DIR}/configure/backup
+CONF_DIR=${DIR}/configure/${TARGET} # base parameter. because of "${TARGET}"
+CONFIGS=""
+
+if [ -n "$(hostnamectl | grep Ubuntu)" ]; then
+	TARGET=ubuntu
+	BIN=/usr/bin
+fi
+
+clean() {
+	for CONFIG in $(ls $1)
+		do
+			case ${CONFIG} in
+				bas*|git*|tmu*|vim*)
+				sudo rm ${HOME}/.${CONFIG}
+				;;
+				csc*)
+				sudo rm ${BIN}/mkcscope.sh
+				;;
+			esac
+		done
+}
+
+confirm() {
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+			msg "yes"
+            true
+        ;;
+        *)
+			msg "no"
+            false
+     ;;
+    esac
+}
+
+msg() {
+	echo $1
+}

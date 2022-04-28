@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+# DIR: all setting shell script It should be defined before fucntions.
+DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
+
+# functions
+. ${DIR}/functions/common.func
+. ${DIR}/functions/${TARGET}.func
+
+# packages
+install_packages
+# vim
+install_vim_plugin
+# ubuntu config
+if [ -n "$(ls ${BACKUP_DIR})" ]; then
+	msg "===== WARNING! There are backup files already. ====="
+	confirm "Do you still want to proceed with the backup? (y/N)?" \
+		&& workspace_backup ${CONF_DIR}
+else
+	workspace_backup ${CONF_DIR}
+fi
+workspace_config ${CONF_DIR}
+workspace_apply

@@ -1,0 +1,85 @@
+#!/bin/bash
+set -e
+
+# functions
+. ${DIR}/functions/common.func
+. ${DIR}/functions/vim.func
+
+# bin
+BIN=/usr/bin
+
+# var
+BACKUP_DIR=${DIR}/configure/backup
+CONF_DIR=${DIR}/configure/${TARGET} # base parameter. because of "${TARGET}"
+PACKAGES="gcc git tig vim-gtk3 curl exuberant-ctags cscope tmux gnome-tweak-tool"
+
+install_packages() {
+	msg "===== PACKAGE UPDATE ====="
+	sudo apt-get install --fix-broken && sudo apt update
+	msg "===== INSTALL PACKAGE ====="
+	sudo apt-get install -y ${PACKAGES}
+}
+
+remove_packages() {
+	msg "===== REMOVE PACKAGE ====="
+	sudo apt-get purge ${PACKAGES}
+}
+
+workspace_apply() {
+	msg "===== Apply CONFIGS ====="
+	vim +PluginInstall +qall
+	. ~/.bashrc
+}
+
+workspace_backup() { # ${CONF_DIR}
+	msg "===== BACKUP CONFIGS ====="
+	for CONFIGS in $(ls $1)
+		do
+			case ${CONFIGS} in
+				bas*|git*|tmu*|vim*)
+				if [ -n "$(ls -al ${HOME} | grep .${CONFIGS})" ]; then
+					sudo cp ${HOME}/.${CONFIGS} ${BACKUP_DIR}/${CONFIGS}
+				fi
+				;;
+				csc*)
+				if [ -n "$(ls ${BIN} | grep mkcsc*)" ]; then
+					sudo cp ${BIN}/mkcscope.sh ${BACKUP_DIR}/${CONFIGS}
+				fi
+				;;
+			esac
+		done
+}
+
+workspace_config() { # ${CONF_DIR}
+	msg "===== CONFIGS ====="
+	for CONFIGS in $(ls $1)
+		do
+			case ${CONFIGS} in
+				bas*|git*|tmu*|vim*)
+				sudo cp ${CONF_DIR}/${CONFIGS} ${HOME}/.${CONFIGS}
+				;;
+				csc*)
+				sudo cp ${CONF_DIR}/${CONFIGS} ${BIN}/mkcscope.sh
+				;;
+			esac
+		done
+}
+
+workspace_rollback() { # ${CONF_DIR}
+	msg "===== ROLL BACK ====="
+	if [ -z "$(ls -al ${BACKUP_FILES})" ]; then
+		msg "Can't rollback, please backup configs."
+		exit 0
+	fi
+	for CONFIGS in $(ls $1)
+		do
+			case ${CONFIGS} in
+				bas*|git*|tmu*|vim*)
+				sudo cp ${BACKUP_DIR}/${CONFIGS} ${HOME}/.${CONFIGS}
+				;;
+				csc*)
+				sudo cp ${BACKUP_DIR}/${CONFIGS} ${BIN}/mkcscope.sh
+				;;
+			esac
+		done
+}

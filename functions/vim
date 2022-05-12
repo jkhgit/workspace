@@ -11,7 +11,7 @@ DST_VDLURL="${HOME}/.vim/bundle/Vundle.vim"
 DST_CLRURL="/usr/share/vim/vim${VIM_VERSION}/colors"
 
 # functions
-. ${DIR}/functions/common.func
+. ${TOPDIR}/functions/common
 
 install_vim_plugin() {
 	msg "===== VIM PLUGIN INSTALL ====="

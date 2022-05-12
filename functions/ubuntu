@@ -2,15 +2,15 @@
 set -e
 
 # functions
-. ${DIR}/functions/common.func
-. ${DIR}/functions/vim.func
+. ${TOPDIR}/functions/common
+. ${TOPDIR}/functions/vim
 
 # bin
 BIN=/usr/bin
 
 # var
-BACKUP_DIR=${DIR}/configure/backup
-CONF_DIR=${DIR}/configure/${TARGET} # base parameter. because of "${TARGET}"
+BACKUP_DIR=${TOPDIR}/configure/backup
+CONF_DIR=${TOPDIR}/configure/${TARGET} # base parameter. because of "${TARGET}"
 PACKAGES="gcc git tig vim-gtk3 curl exuberant-ctags cscope tmux gnome-tweak-tool"
 
 install_packages() {
@@ -45,6 +45,20 @@ workspace_backup() { # ${CONF_DIR}
 				if [ -n "$(ls ${BIN} | grep mkcsc*)" ]; then
 					sudo cp ${BIN}/mkcscope.sh ${BACKUP_DIR}/${CONFIGS}
 				fi
+				;;
+			esac
+		done
+}
+
+workspace_clean() { # ${CONF_DIR}
+	for CONFIG in $(ls $1)
+		do
+			case ${CONFIG} in
+				bas*|git*|tmu*|vim*)
+				sudo rm ${HOME}/.${CONFIG}
+				;;
+				csc*)
+				sudo rm ${BIN}/mkcscope.sh
 				;;
 			esac
 		done

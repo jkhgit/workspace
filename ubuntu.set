@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-# DIR: all setting shell script It should be defined before fucntions.
-DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
+TARGET=ubuntu
+TOPDIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
 
 # functions
-. ${DIR}/functions/common.func
-. ${DIR}/functions/${TARGET}.func
+. ${TOPDIR}/functions/common
+. ${TOPDIR}/functions/${TARGET}
 
 # packages
 install_packages

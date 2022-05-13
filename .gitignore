@@ -1,11 +1,5 @@
 # swp file
 *.swp
 
-# bak file
-configure/backup/*.conf
-configure/backup/*conf
-configure/backup/*.config
-configure/backup/*config
-configure/backup/*.rc
-configure/backup/*rc
-*.bak
+# backup files
+backup/

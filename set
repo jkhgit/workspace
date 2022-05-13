@@ -1,0 +1,38 @@
+#!/bin/bash
+set -e
+
+usage() {
+	echo "Usage: $(basename $0) [--help] [--target=<env>]"
+	echo ""
+	echo "	===== options ====="
+	echo "	--help: print usage"
+	echo "	--target=<env>: select setting env"
+	echo "	==================="
+	echo ""
+	echo "	e.g. setting \"vi\" env"
+	echo ""
+	echo "	$ cd workspace"
+	echo "	$ ./set --target=vi"
+	exit 0
+}
+
+# option parsing
+for opt in $@; do
+	case ${opt} in
+		--help)
+		usage
+		;;
+		--target=*)
+		TARGET=${opt#*=}
+		;;
+		*)
+		echo "Invalid option"
+		;;
+	esac
+done
+
+# functions
+TOP_DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
+. ${TOP_DIR}/target/${TARGET}/functions
+
+_set_config

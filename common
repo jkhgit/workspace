@@ -1,0 +1,121 @@
+#!/bin/bash
+set -e
+
+# BIN
+BIN=/usr/bin
+
+BACKUP_DIR=${TOP_DIR}/backup/
+CONF_DIR=${TOP_DIR}/target/${TARGET}/configure/
+CONFIGS=""
+
+add_repository() {
+	case ${TARGET} in
+		*)
+		. ${TOP_DIR}/target/${TARGET}/repo
+		;;
+	esac
+}
+
+confirm() {
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [Y/n]} " response
+    case "$response" in
+        [nN][oO]|[nN])
+			echo "no"
+            false
+        ;;
+        *)
+			echo "yes"
+            true
+     ;; esac
+}
+
+get_packages() {
+	[ -f ${1} ] && cat ${1} | awk -F '#|;' '{print $1}'
+}
+
+get_target_packages() {
+	local pkgs="" 
+	pkgs="${pkgs} $(get_packages ${TOP_DIR}/target/${TARGET}/packages)"
+
+	echo ${pkgs} | tr " " "\n" | sort | uniq | tr "\n" " "
+}
+
+install_packages() {
+	echo "===== PACKAGE UPDATE ====="
+	sudo apt-get install --fix-broken && sudo apt update
+	echo "===== INSTALL PACKAGE ====="
+	sudo apt-get install -y $(get_target_packages)
+}
+
+remove_packages() {
+	echo "===== REMOVE PACKAGE ====="
+	sudo apt-get purge $(get_target_packages)
+}
+
+workspace_backup() {
+	echo "===== BACKUP CONFIGS ====="
+	mkdir -p ${BACKUP_DIR}
+	for CONFIGS in $(ls ${CONF_DIR})
+		do
+			case ${CONFIGS} in
+				*rc|*conf*)
+				[ -n "$(ls -al ${HOME} | grep .${CONFIGS})" ] \
+					&& sudo cp ${HOME}/.${CONFIGS} ${BACKUP_DIR}/${CONFIGS}
+				;;
+				*sh)
+				[ -n "$(ls ${BIN} | grep ${CONFIGS})" ] \
+					&& sudo cp ${BIN}/${CONFIGS} ${BACKUP_DIR}/${CONFIGS}
+				;;
+			esac
+		done
+}
+
+workspace_clean() {
+	for CONFIGS in $(ls ${CONF_DIR})
+		do
+			case ${CONFIGS} in
+				*rc|*conf*)
+				sudo rm ${HOME}/.${CONFIGS};;
+				*sh)
+				sudo rm ${BIN}/${CONFIGS};;
+			esac
+		done
+}
+
+workspace_config() {
+	local config_flag="jkhgit: ${TARGET} setting"
+	echo "===== CONFIGS ====="
+	for CONFIGS in $(ls ${CONF_DIR}); do
+		case ${CONFIGS} in
+			*conf*)
+			sudo cp ${CONF_DIR}/${CONFIGS} ${HOME}/.${CONFIGS}
+			;;
+			*rc)
+			[ -z "$(sed -n '/jkhgit:/,/$/p' ${HOME}/.${CONFIGS} | grep ${TARGET})" ] \
+				&& sudo cat ${CONF_DIR}/${CONFIGS} >> ${HOME}/.${CONFIGS}
+			;;
+			*sh)
+			sudo cp ${CONF_DIR}/${CONFIGS} ${BIN}/${CONFIGS}
+			;;
+		esac
+	done
+
+	source ${HOME}/.bashrc
+}
+
+workspace_rollback() {
+	echo "===== ROLL BACK ====="
+	if [ -z "$(ls -al ${BACKUP_FILES})" ]; then
+		echo "Can't rollback, please backup configs."
+		exit 0
+	fi
+	for CONFIGS in $(ls ${CONF_DIR}); do
+		case ${CONFIGS} in
+			*rc|*conf*)
+			sudo cp ${BACKUP_DIR}/${CONFIGS} ${HOME}/.${CONFIGS};;
+			*sh)
+			sudo cp ${BACKUP_DIR}/${CONFIGS} ${BIN}/${CONFIGS};;
+		esac
+	done
+}

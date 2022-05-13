@@ -1,5 +1,5 @@
-"~/ubuntu$ cp vimsetting ~/.vimrc
 
+" jkhgit: vi setting
 set shell=/bin/bash
 
 syntax on	"syntax hilight

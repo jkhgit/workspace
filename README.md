@@ -1,13 +1,22 @@
-# setting workspace
+# workspace
 
 Support list:
 
-- Ubuntu
+- ubuntu
+- vi
 
 Run:
 
-- Ubuntu setting
 ```
-$ ./ubuntu.set
+$ cd workspace/
 ```
 
+- ubuntu setting
+```
+$ ./set --target=ubuntu
+```
+
+- vi setting
+```
+$ ./set --target=vi
+```

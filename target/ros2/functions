@@ -1,0 +1,80 @@
+#!/bin/bash
+set -e
+
+WS_DIR="$( cd "$( dirname ${TOP_DIR} )" && pwd -P )"/robot_ws
+
+# functions
+. ${TOP_DIR}/common
+
+if [ $(python3 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/') != 38 ]; then
+	echo " setting env python3 version: 3.8 ..."
+	exit 0
+fi
+
+build_test() {
+
+	if [ -z $(find ${HOME} -name robot_ws) ]; then
+		source /opt/ros/foxy/setup.bash
+		mkdir -p ${WS_DIR}/src
+	fi
+
+	cd ${WS_DIR}
+	colcon build --symlink-install
+}
+
+ros2_create_example_rclpy_pkg() {
+	local rclpy_package="ex_ros_rclpy_pkg"
+
+	[ -d ${WS_DIR}/src/${rclpy_package} ] && rm -rf ${WS_DIR}/src/${rclpy_package}
+	ros2 pkg create ${rclpy_package} \
+		--build-type ament_python --dependencies rclpy std_msgs --destination-directory ${WS_DIR}/src
+
+	sed -i "/console/a\ \\t\t\t'exe_publisher_py = ex_ros_rclpy_pkg.publisher:main\',\n\t\t\t'exe_subscriber_py = ex_ros_rclpy_pkg.subscriber:main\'," ${WS_DIR}/src/${rclpy_package}/setup.py
+	cp ${CONF_DIR}/publisher.py ${WS_DIR}/src/${rclpy_package}/${rclpy_package}/
+	cp ${CONF_DIR}/subscriber.py ${WS_DIR}/src/${rclpy_package}/${rclpy_package}/
+
+	cd ${WS_DIR} && colcon build --symlink-install --packages-select ${rclpy_package}
+}
+
+ros2_create_example_rclcpp_pkg() {
+	local rclcpp_package="ex_ros_rclcpp_pkg"
+
+	[ -d ${WS_DIR}/src/${rclcpp_package} ] && rm -rf ${WS_DIR}/src/${rclcpp_package}
+	ros2 pkg create ${rclcpp_package} \
+		--build-type ament_cmake --dependencies rclcpp std_msgs --destination-directory ${WS_DIR}/src
+
+	cp ${CONF_DIR}/publisher.cpp ${WS_DIR}/src/${rclcpp_package}/src
+	cp ${CONF_DIR}/subscriber.cpp ${WS_DIR}/src/${rclcpp_package}/src
+	cat ${CONF_DIR}/cmake >> ${WS_DIR}/src/${rclcpp_package}/CMakeLists.txt
+
+	cd ${WS_DIR} && colcon build --symlink-install --packages-select ${rclcpp_package}
+}
+
+ros2_locales() {
+	sudo locale-gen en_US en_US.UTF-8
+	sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+	export LANG=en_US.UTF-8
+}
+
+# ros2 config function
+_set_config() {
+	add_repository
+	install_packages
+	ros2_locales
+
+	python3.8 -m pip install -U -r ${TOP_DIR}/target/${TARGET}/requirements
+	sudo apt install --no-install-recommends -y \
+		libasio-dev \
+		libtinyxml2-dev \
+		libcunit1-dev
+
+	if [ -n "$(ls ${TOP_DIR} | grep backup)" ]; then
+		echo "===== WARNING! There are backup files already. ====="
+		confirm "Do you still want to proceed with the backup? (Y/n)?" \
+			&& workspace_backup
+	else
+		workspace_backup
+	fi
+	workspace_config
+	build_test
+}

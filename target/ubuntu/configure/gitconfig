@@ -11,3 +11,5 @@
 	logs = log --oneline --branches --graph
 [core]
 	editor = vim
+[diff]
+	submodule = log

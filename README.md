@@ -19,7 +19,7 @@ $ ./set --target=ros2
 
 - ubuntu setting
 ```
-$ ./set --target=ubuntu
+$ ./set --target=shell
 ```
 
 - vi setting

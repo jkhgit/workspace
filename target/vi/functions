@@ -1,10 +1,5 @@
 #!/bin/bash
 
-set -e
-
-# "vi" setting
-VIM_VERSION=81
-
 # var
 CLRURL="https://raw.githubusercontent.com/nanotech/jellybeans.vim/master/colors/jellybeans.vim"
 COLORS=jellybeans.vim
@@ -12,33 +7,14 @@ DST_VDLURL="${HOME}/.vim/bundle/Vundle.vim"
 DST_CLRURL="/usr/share/vim/vim${VIM_VERSION}/colors"
 VDLURL="https://github.com/VundleVim/Vundle.vim.git"
 
-# functions
-. ${TOP_DIR}/common
+# run
+echo "===== VIM PLUGIN INSTALL ====="
+sudo rm -rf ${HOME}/.vim
+git clone ${VDLURL} ${DST_VDLURL}
+mkdir -p ${HOME}/.vim/colors
+cd ${HOME}/.vim/colors
+curl -O ${CLRURL}
+sudo mv ${COLORS} ${DST_CLRURL} # need to check 'vim81'
 
-install_vim_plugin() {
-	echo "===== VIM PLUGIN INSTALL ====="
-	sudo rm -rf ${HOME}/.vim/
-	git clone ${VDLURL} ${DST_VDLURL}
-	mkdir -p ${HOME}/.vim/colors
-	cd ${HOME}/.vim/colors
-	curl -O ${CLRURL}
-	sudo mv ${COLORS} ${DST_CLRURL} # need to check 'vim81'
-}
-
-_set_config() {
-	add_repository
-	install_packages
-	install_vim_plugin
-
-	if [ -n "$(ls ${TOP_DIR} | grep backup)" ]; then
-		echo "===== WARNING! There are backup files already. ====="
-		confirm "Do you still want to proceed with the backup? (Y/n)?" \
-			&& workspace_backup
-	else
-		workspace_backup
-	fi
-	workspace_config
-
-	echo "===== Apply VIM ====="
-	vim +PluginInstall +qall
-}
+echo "===== Apply VIM ====="
+vim +PluginInstall +qall

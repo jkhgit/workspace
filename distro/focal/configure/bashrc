@@ -1,0 +1,4 @@
+
+# steve.jeong: focal setting
+# jkhpro1003@gmail.com
+set -o vi # set terminal like vi

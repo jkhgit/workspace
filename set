@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# directories
+TOP_DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
+WS_DIR=`pwd -P`
+
 usage() {
 	echo "Usage: $(basename $0) [--help] [--target=<env>]"
 	echo ""
@@ -31,8 +35,27 @@ for opt in $@; do
 	esac
 done
 
-# functions
-TOP_DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
-. ${TOP_DIR}/target/${TARGET}/functions
+# includes
+. ${TOP_DIR}/time
+. ${TOP_DIR}/prefix
+. ${TOP_DIR}/common-functions
 
-_set_config
+SPEED=${FAST}
+
+basic_set() {
+	fix_env
+	install_packages
+	config_bak
+	config_all
+	apply_all
+}
+
+custom_set() {
+	fix_env
+	# custum
+	# ...
+
+}
+
+basic_set
+#custom_set

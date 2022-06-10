@@ -1,0 +1,68 @@
+#!/bin/bash
+
+AUTHOR="steve.jeong:"
+
+# vars
+BACKUP_DIR=${TOP_DIR}/backups/${TIME}
+BIN=/usr/bin
+HISTORY="${TOP_DIR}/history"
+TMP_CFG_LIST=${TOP_DIR}/CONFIG_LIST.tmp
+
+# vars-structure
+CFGS=()
+FUNCS=()
+PKGS=()
+PREFIX=()
+REPOS=()
+
+
+# prefix
+_prefix() {
+	local foo=""
+
+	foo=$(cat /etc/*-release | grep CODENAME)
+	DISTRO=${foo##*=}
+	foo=$(cat /etc/*-release | grep RELEASE)
+	RELEASE=${foo##*=}
+
+	case ${DISTRO} in
+		bionic | focal | jammy)
+			OSNAME=ubuntu
+		;;
+		buster | bullseye | bookworm)
+			OSNAME=debian
+		;;
+	esac
+
+	PREFIX=(
+		"${TOP_DIR}/distro/${DISTRO}"
+		"${TOP_DIR}/target/${TARGET}"
+	)
+
+}
+
+fix_env() {
+
+	_prefix
+
+	echo "OS=${OSNAME} ${RELEASE}"
+	echo "DISTRO=${DISTRO}"
+	echo "TARGET=${TARGET}"
+
+	for idx in "${PREFIX[@]}"; do
+		CFGS+=("${idx}/configure")
+	done
+
+	for idx in "${PREFIX[@]}"; do
+		FUNCS+=("${idx}/functions")
+	done
+
+	for idx in "${PREFIX[@]}"; do
+		PKGS+=("${idx}/packages")
+	done
+
+	for idx in "${PREFIX[@]}"; do
+		REPOS+=("${idx}/repo")
+	done
+}
+

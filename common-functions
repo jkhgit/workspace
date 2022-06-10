@@ -1,0 +1,162 @@
+#!/bin/bash
+
+# functions
+apply_all() {
+	for idx in "${FUNCS[@]}"; do
+		[ -f ${idx} ] \
+			&& . ${idx}
+	done
+}
+
+config_all() {
+	local src=""
+	local dst=""
+
+	! [ -f ${TMP_CFG_LIST} ] \
+		&& list_of_configs
+
+	echo ""
+	echo "===== CONFIG SET ====="
+	echo "===== Loading... ====="
+	for conf_dir in "${CFGS[@]}"; do
+		for conf_list in $(ls ${conf_dir}); do
+			case ${conf_list} in
+			*conf*|*rc)
+			src=${conf_dir}/${conf_list}
+			dst=${HOME}/.${conf_list}
+			overlay_configs ${src} ${dst} # case 1
+			;;
+			*sh)
+			src=${conf_dir}/${conf_list}
+			dst=${BIN}/${conf_list}
+			overlay_configs ${src} ${dst} # case 2
+			;;
+			esac
+		done
+	done
+
+	update_history "===== set config ====="
+}
+
+config_bak() {
+	if [ -n "$(ls ${TOP_DIR} | grep backup)" ]; then
+		echo "===== WARNING! There are backup files already. ====="
+			confirm "Do you still want to proceed with the backup? (Y/n)?" \
+			&& bak_configs
+	else
+		bak_configs
+	fi
+	sleep ${SPEED}
+}
+
+install_packages() {
+	add_repository
+	echo "===== PACKAGE UPDATE ====="
+	sudo apt-get install --fix-broken && sudo apt update
+	echo "===== INSTALL PACKAGE ====="
+	sudo apt-get install -y $(list_of_packages)
+}
+
+# configs
+bak_configs() {
+	local src=""
+	local dst=""
+
+	echo "===== BACKUP CONFIGS ====="
+		mkdir -p ${BACKUP_DIR}
+
+	for conf_list in $(list_of_configs); do
+		case ${conf_list} in
+			*conf*|*rc)
+			src=${HOME}/.${conf_list}
+			dst=${BACKUP_DIR}/${conf_list}
+			;;
+			*sh)
+			src=${BIN}/${conf_list}
+			dst=${BACKUP_DIR}/${conf_list}
+			;;
+		esac
+			[ -f ${src} ] && sudo cp ${src} ${dst}
+	done
+
+	update_history "===== backup ====="
+}
+
+get_configs() {
+	[ -f ${1} ] && cat ${1} | awk -F '#|;' '{print $1}'
+}
+
+list_of_configs() {
+	local confs=""
+
+	for idx in "${CFGS[@]}"; do
+		echo "$(ls ${idx})" >> ${TMP_CFG_LIST}
+	done
+
+	confs="${confs} $(get_configs ${TMP_CFG_LIST})"
+
+	echo ${confs} | tr " " "\n" | sort | uniq | tr "\n" " "
+}
+
+overlay_configs() {
+	if [ -f ${2} ]; then
+		if [ -z "$(cat ${2} | grep "${AUTHOR}")" ]; then
+			if [ -z "$(cat ${2} | grep ${DISTRO})" ] \
+				|| [ -z "$(cat ${2} | grep ${TARGET})" ]; then
+					$(cat ${1} | sudo tee -a ${2})
+			fi
+		fi
+		sleep ${SPEED}
+	else
+		sudo cp ${1} ${2}
+	fi
+}
+
+# packages
+add_repository() {
+	for idx in ${REPOS[@]}; do
+			[ -f ${idx} ] \
+				&& . ${idx}
+	done
+}
+
+get_packages() {
+	[ -f ${1} ] && cat ${1} | awk -F '#|;' '{print $1}'
+}
+
+list_of_packages() {
+	local pkgs=""
+
+	for idx in "${PKGS[@]}"; do
+		pkgs="${pkgs} $(get_packages ${idx})"
+	done
+		echo ${pkgs} | tr " " "\n" | sort | uniq | tr "\n" " "
+
+}
+
+remove_packages() {
+	echo "===== REMOVE PACKAGE ====="
+		sudo apt-get purge $(list_of_packages)
+}
+
+# etc
+confirm() {
+	read -r -p "${1:-Are you sure? [Y/n]} " response
+	case "$response" in
+		[nN][oO]|[nN])
+			echo "no"
+				false
+				;;
+		*)
+			echo "yes"
+			true
+			;; esac
+}
+
+update_history() {
+	echo "${1}" >> "${HISTORY}"
+	date >> "${HISTORY}"
+	cat ${TMP_CFG_LIST} >> "${HISTORY}"
+	awk '!x[$0]++' "${HISTORY}" > /dev/null 2>&1
+	rm ${TMP_CFG_LIST}
+}

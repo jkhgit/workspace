@@ -1,5 +1,6 @@
 
-# jkhgit: ros2 config
+# steve.jeong: ros2 config
+# jkhpro1003@gmail.com
 source /opt/ros/foxy/setup.bash
 source ~/robot_ws/install/local_setup.bash
 

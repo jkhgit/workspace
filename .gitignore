@@ -1,5 +1,9 @@
-# swp file
+# files
 *.swp
+*.tmp
 
-# backup files
-backup/
+# directories
+backups/
+
+# history
+history

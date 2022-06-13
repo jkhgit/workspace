@@ -12,7 +12,7 @@ config_all() {
 	local src=""
 	local dst=""
 
-	! [ -f ${TMP_CFG_LIST} ] \
+	! [ -e ${TMP_CFG_LIST} ] \
 		&& list_of_configs
 
 	echo ""
@@ -76,14 +76,14 @@ bak_configs() {
 			dst=${BACKUP_DIR}/${conf_list}
 			;;
 		esac
-			[ -f ${src} ] && sudo cp ${src} ${dst}
+			[ -e ${src} ] && sudo cp ${src} ${dst}
 	done
 
 	update_history "===== backup ====="
 }
 
 get_configs() {
-	[ -f ${1} ] && cat ${1} | awk -F '#|;' '{print $1}'
+	[ -e ${1} ] && cat ${1} | awk -F '#|;' '{print $1}'
 }
 
 list_of_configs() {
@@ -99,10 +99,10 @@ list_of_configs() {
 }
 
 overlay_configs() {
-	if [ -f ${2} ]; then
-		if [ -z "$(cat ${2} | grep "${AUTHOR}")" ]; then
+	if [ -e ${2} ]; then
+		if [ -z "$(cat ${2} | grep ${AUTHOR})" ]; then
 			if [ -z "$(cat ${2} | grep ${DISTRO})" ] \
-				|| [ -z "$(cat ${2} | grep ${TARGET})" ]; then
+				&& [ -z "$(cat ${2} | grep ${TARGET})" ]; then
 					$(cat ${1} | sudo tee -a ${2})
 			fi
 		fi

@@ -1,6 +1,4 @@
-
-# steve.jeong: ros2 config
-# jkhpro1003@gmail.com
+# ROS setting
 source /opt/ros/foxy/setup.bash
 source ~/robot_ws/install/local_setup.bash
 

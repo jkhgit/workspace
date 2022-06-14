@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# var
 CLRURL="https://raw.githubusercontent.com/nanotech/jellybeans.vim/master/colors/jellybeans.vim"
 COLORS=jellybeans.vim
 DST_VDLURL="${HOME}/.vim/bundle/Vundle.vim"
 DST_CLRURL="/usr/share/vim/vim${VIM_VERSION}/colors"
 VDLURL="https://github.com/VundleVim/Vundle.vim.git"
 
-# run
+# vim
+sed -i 's/^\#/"/g' ${HOME}/.vimrc > /dev/null 2>&1
 echo "===== VIM PLUGIN INSTALL ====="
 sudo rm -rf ${HOME}/.vim
 git clone ${VDLURL} ${DST_VDLURL}

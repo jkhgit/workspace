@@ -1,0 +1,50 @@
+#!/bin/bash
+
+copy_config() {
+	local conf_list=""
+
+	for idx in "${CFG_DIR[@]}"; do
+		conf_list=($(ls ${idx}))
+		for config in "${conf_list[@]}"; do
+			if [ -e ${HOME}/.${config} ]; then
+				sudo cp ${HOME}/.${config} ${SET_CFG_DIR}/${config}
+			else
+				sudo cp ${idx}/${config} ${SET_CFG_DIR}/${config}
+			fi
+		done
+	done
+
+	echo "[C] copy OK..."
+}
+
+overlay_config() {
+	local conf_list=""
+	local flag=""
+	
+	conf_list=($(ls ${SET_CFG_DIR}))
+	for idx in "${CFG_DIR[@]}"; do
+		for config in "${conf_list[@]}"; do
+			if [ ! -e ${idx}/${config} ]; then
+				continue
+			fi
+			flag="$(sed -n '1p' ${idx}/${config})"
+			[ -z "$(cat ${SET_CFG_DIR}/${config} | grep "${flag}")" ] \
+				&& sudo cat ${idx}/${config} | sudo tee -a ${SET_CFG_DIR}/${config} > /dev/null 2>&1
+		done
+	done
+
+	echo "[C] overlay OK..."
+}
+
+marking_config() {
+	local conf_list=""
+
+	conf_list=($(ls ${SET_CFG_DIR}))
+	for idx in "${conf_list[@]}"; do
+		sudo sed -i -e "1 i\\# steve.jeong's setting" ${HOME}/.${idx}
+		sudo sed -i -e "2 i\\# email=jkhpro1003@gmail.com\n" ${HOME}/.${idx}
+	done
+}
+
+copy_config
+overlay_config

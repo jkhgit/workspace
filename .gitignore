@@ -1,9 +1,12 @@
 # files
+*.log
 *.swp
 *.tmp
+*test*
 
 # directories
 backups/
+install/
 
 # history
 history

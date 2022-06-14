@@ -26,6 +26,20 @@ for opt in $@; do
 		--help)
 		usage
 		;;
+		--mode=*)
+		parse=${opt#*=}
+			case ${parse} in
+			[nN][oO][mM][aA][lL]|[nN])
+			MODE=normal
+			;;
+			[aA][dD][dD]|[aA])
+			MODE=add
+			;;
+			esac
+		;;
+		--speed=*)
+		SPEED=${opt#*=}
+		;;
 		--target=*)
 		TARGET=${opt#*=}
 		;;
@@ -38,24 +52,33 @@ done
 # includes
 . ${TOP_DIR}/time
 . ${TOP_DIR}/prefix
-. ${TOP_DIR}/common-functions
+. ${TOP_DIR}/functions
 
-SPEED=${FAST}
+# default options
+[ -z ${MODE} ] && MODE="normal"
+[ -z ${SPEED} ] && SPEED="1"
+[ -z ${TARGET} ] && TARGET="vi"
 
-basic_set() {
+run() {
+	local list=""
+	local prog=""
+
 	fix_env
-	install_packages
-	config_bak
-	config_all
-	apply_all
+	setup
+
+	for idx in "${SRT_DIR[@]}"; do
+		[ $(find ${idx} -type f | wc -l) != 0 ] \
+			&& sudo cp ${idx}/* ${SET_SRT_DIR}
+	done
+
+	list=($(ls -A1 ${SET_SRT_DIR}))
+	for idx in "${list[@]}"; do
+		prog=${idx%%-*}
+		prog=${prog:1:2}
+		echo "processing... ${prog}%"
+		. ${SET_SRT_DIR}/${idx}
+		sleep ${SPEED}
+	done
 }
 
-custom_set() {
-	fix_env
-	# custum
-	# ...
-
-}
-
-basic_set
-#custom_set
+run

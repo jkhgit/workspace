@@ -1,22 +1,23 @@
 #!/bin/bash
 
-AUTHOR="steve.jeong:"
+AUTHOR="steve.jeong"
+MAIL="jkhpro1003@gmail.com"
 
 # vars
-BACKUP_DIR=${TOP_DIR}/backups/${TIME}
+BACKUP_DIR=${TOP_DIR}/backups
 BIN=/usr/bin
 HISTORY="${TOP_DIR}/history"
+INSTALL_DIR=${TOP_DIR}/install
 TMP_CFG_LIST=${TOP_DIR}/CONFIG_LIST.tmp
 
-# vars-structure
-CFGS=()
-FUNCS=()
-PKGS=()
-PREFIX=()
-REPOS=()
-
-
 # prefix
+PREFIX=()
+# directories
+CFG_DIR=()
+SRT_DIR=()
+PKG_TXT=()
+RPO_TXT=()
+
 _prefix() {
 	local foo=""
 
@@ -35,6 +36,7 @@ _prefix() {
 	esac
 
 	PREFIX=(
+		"${TOP_DIR}/common"
 		"${TOP_DIR}/distro/${DISTRO}"
 		"${TOP_DIR}/target/${TARGET}"
 	)
@@ -50,19 +52,16 @@ fix_env() {
 	echo "TARGET=${TARGET}"
 
 	for idx in "${PREFIX[@]}"; do
-		CFGS+=("${idx}/configure")
+		[ -d ${idx}/configure ] && CFG_DIR+=("${idx}/configure")
 	done
 
 	for idx in "${PREFIX[@]}"; do
-		FUNCS+=("${idx}/functions")
+		[ -e ${idx}/packages ] && PKG_TXT+=("${idx}/packages")
 	done
 
 	for idx in "${PREFIX[@]}"; do
-		PKGS+=("${idx}/packages")
+		[ -d ${idx}/scripts ] && SRT_DIR+=("${idx}/scripts")
 	done
 
-	for idx in "${PREFIX[@]}"; do
-		REPOS+=("${idx}/repo")
-	done
 }
 

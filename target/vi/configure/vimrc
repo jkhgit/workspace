@@ -1,6 +1,3 @@
-
-" steve.jeong: vi setting
-" jkhpro1003@gmail.com
 set shell=/bin/bash
 
 syntax on	"syntax hilight

@@ -3,7 +3,6 @@ set -e
 
 # directories
 TOP_DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
-WS_DIR=`pwd -P`
 
 usage() {
 	echo "Usage: $(basename $0) [--help] [--target=<env>]"

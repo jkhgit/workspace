@@ -1,3 +1,5 @@
 #!/bin/bash
 
 sudo rm -rf ${INSTALL_DIR}
+
+echo "processing... 100%"

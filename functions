@@ -17,7 +17,7 @@ setup() {
 
 confirm() {
 	read -r -p "${1:-Are you sure? [Y/n]} " response
-	case "$response" in
+	case ${response} in
 		[nN][oO]|[nN])
 			echo "no"
 				false

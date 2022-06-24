@@ -2,20 +2,26 @@
 set -e
 
 # directories
-TOP_DIR="$( cd "$( dirname "$BASH_SOURCE" )" && pwd -P )"
+TOP_DIR="$( cd "$( dirname ${BASH_SOURCE} )" && pwd -P )"
 
 usage() {
 	echo "Usage: $(basename $0) [--help] [--target=<env>]"
+	echo "                    [--version=<target version>]"
+	echo "                    [--name=<name>]"
 	echo ""
-	echo "	===== options ====="
-	echo "	--help: print usage"
-	echo "	--target=<env>: select setting env"
-	echo "	==================="
 	echo ""
-	echo "	e.g. setting \"vi\" env"
+	echo "       ===== options ====="
+	echo "       --help: print usage"
+	echo "       --target=<env>: select setting env"
+	echo "       --version=<target version>: target's version"
+	echo "                                   e.g. python\"3.6\""
+	echo "       --name=<name>: output name"
+	echo "       ==================="
 	echo ""
-	echo "	$ cd workspace"
-	echo "	$ ./set --target=vi"
+	echo "       e.g. setting \"vi\" env"
+	echo ""
+	echo "       $ cd workspace"
+	echo "       $ ./set --target=vi"
 	exit 0
 }
 
@@ -25,22 +31,17 @@ for opt in $@; do
 		--help)
 		usage
 		;;
-		--mode=*)
-		parse=${opt#*=}
-			case ${parse} in
-			[nN][oO][mM][aA][lL]|[nN])
-			MODE=normal
-			;;
-			[aA][dD][dD]|[aA])
-			MODE=add
-			;;
-			esac
+		--name=*)
+		NAME=${opt#*=}
 		;;
 		--speed=*)
 		SPEED=${opt#*=}
 		;;
 		--target=*)
 		TARGET=${opt#*=}
+		;;
+		--version=*)
+		VERSION=${opt#*=}
 		;;
 		*)
 		echo "Invalid option"
@@ -54,9 +55,10 @@ done
 . ${TOP_DIR}/functions
 
 # default options
-[ -z ${MODE} ] && MODE="normal"
+[ -z ${NAME} ] && NAME="base"
 [ -z ${SPEED} ] && SPEED="1"
 [ -z ${TARGET} ] && TARGET="vi"
+[ -z ${VERSION} ] && VERSION="None"
 
 run() {
 	local list=""
@@ -78,6 +80,7 @@ run() {
 		. ${SET_SRT_DIR}/${idx}
 		sleep ${SPEED}
 	done
+
 }
 
 # remove install directory

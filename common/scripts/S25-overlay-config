@@ -14,7 +14,7 @@ copy_config() {
 		done
 	done
 
-	echo "[C] copy OK..."
+	echo "[C] copy... OK"
 }
 
 overlay_config() {
@@ -33,7 +33,7 @@ overlay_config() {
 		done
 	done
 
-	echo "[C] overlay OK..."
+	echo "[C] overlay... OK"
 }
 
 marking_config() {

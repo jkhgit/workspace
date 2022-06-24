@@ -10,7 +10,7 @@ set_config() {
 	done
 	update_history "===== setup ====="
 
-	echo "[C] complete setting..."
+	echo "[C] configure setting... OK"
 }
 
 set_config

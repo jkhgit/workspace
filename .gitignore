@@ -2,7 +2,6 @@
 *.log
 *.swp
 *.tmp
-*test*
 
 # directories
 backups/

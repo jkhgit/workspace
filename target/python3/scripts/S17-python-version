@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ ${VERSION} == "None" ]; then
+	case ${DISTRO} in
+		bionic)
+		VERSION=3.6
+		;;
+		focal)
+		VERSION=3.8
+		;;
+	esac
+fi

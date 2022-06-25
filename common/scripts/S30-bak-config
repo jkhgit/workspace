@@ -2,14 +2,15 @@
 
 bak_configs() {
 	local conf_list=""
-	
+
 	conf_list=($(ls ${SET_CFG_DIR}))
 	[ ! -d ${BACKUP_DIR} ] && mkdir -p ${BACKUP_DIR}
 
 	for idx in ${conf_list[@]}; do
-		[ -e ${HOME}/.${idx} ] \
-			&& sudo cp ${HOME}/.${idx} ${BACKUP_DIR}
-		echo ${idx} >> ${TMP_CFG_LIST}
+		if [ -e ${HOME}/.${idx} ]; then
+			sudo cp ${HOME}/.${idx} ${BACKUP_DIR}/${idx}
+			echo ${idx} >> ${TMP_CFG_LIST}
+		fi
 	done
 	update_history "===== backup ====="
 }

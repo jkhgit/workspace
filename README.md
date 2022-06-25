@@ -1,28 +1,21 @@
 # workspace
 
-Support list:
-
-- docker
-- ros2
-- vi
-
 Run:
 
 ```
-$ cd workspace/
+$ cd workspace
+$ ./set --target=<TARGET>
 ```
 
-- docker setting
-```
-$ ./set --target=docker
-```
+TARGET list:
 
-- ros2 setting
-```
-$ ./set --target=ros2
-```
+- docker
+- python3
+- ros2
+- vi (default)
 
-- vi setting
+help:
+
 ```
-$ ./set --target=vi
+$ ./set --help
 ```

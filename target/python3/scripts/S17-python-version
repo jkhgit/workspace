@@ -8,5 +8,8 @@ if [ ${VERSION} == "None" ]; then
 		focal)
 		VERSION=3.8
 		;;
+		jammy)
+		VERSION=3.10
+		;;
 	esac
 fi

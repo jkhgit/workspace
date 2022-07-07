@@ -10,6 +10,7 @@ $ ./set --target=<TARGET>
 TARGET list:
 
 - docker
+- opencv
 - python3
 - ros2
 - vi (default)

@@ -5,7 +5,8 @@ set hlsearch	"search hilight
 set nu	"print lines
 set autoindent
 set nocompatible
-set ts=4
+set modeline
+filetype indent plugin on
 set title
 set sts=4
 set cindent

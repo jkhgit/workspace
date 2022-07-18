@@ -5,48 +5,48 @@ set -e
 TOP_DIR="$( cd "$( dirname ${BASH_SOURCE} )" && pwd -P )"
 
 usage() {
-	echo "Usage: $(basename $0) [--help] [--target=<env>]"
-	echo "                    [--version=<target version>]"
-	echo "                    [--name=<name>]"
-	echo ""
-	echo ""
-	echo "       ===== options ====="
-	echo "       --help: print usage"
-	echo "       --target=<env>: select setting env"
-	echo "       --version=<target version>: target's version"
-	echo "                                   e.g. python\"3.6\""
-	echo "       --name=<name>: output name"
-	echo "       ==================="
-	echo ""
-	echo "       e.g. setting \"vi\" env"
-	echo ""
-	echo "       $ cd workspace"
-	echo "       $ ./set --target=vi"
-	exit 0
+    echo "Usage: $(basename $0) [--help] [--target=<env>]"
+    echo "                    [--version=<target version>]"
+    echo "                    [--name=<name>]"
+    echo ""
+    echo ""
+    echo "       ===== options ====="
+    echo "       --help: print usage"
+    echo "       --target=<env>: select setting env"
+    echo "       --version=<target version>: target's version"
+    echo "                                   e.g. python\"3.6\""
+    echo "       --name=<name>: output name"
+    echo "       ==================="
+    echo ""
+    echo "       e.g. setting \"vi\" env"
+    echo ""
+    echo "       $ cd workspace"
+    echo "       $ ./set --target=vi"
+    exit 0
 }
 
 # option parsing
 for opt in $@; do
-	case ${opt} in
-		--help)
-		usage
-		;;
-		--name=*)
-		NAME=${opt#*=}
-		;;
-		--speed=*)
-		SPEED=${opt#*=}
-		;;
-		--target=*)
-		TARGET=${opt#*=}
-		;;
-		--version=*)
-		VERSION=${opt#*=}
-		;;
-		*)
-		echo "Invalid option"
-		;;
-	esac
+    case ${opt} in
+        --help)
+        usage
+        ;;
+        --name=*)
+        NAME=${opt#*=}
+        ;;
+        --speed=*)
+        SPEED=${opt#*=}
+        ;;
+        --target=*)
+        TARGET=${opt#*=}
+        ;;
+        --version=*)
+        VERSION=${opt#*=}
+        ;;
+        *)
+        echo "Invalid option"
+        ;;
+    esac
 done
 
 # includes
@@ -61,25 +61,25 @@ done
 [ -z ${VERSION} ] && VERSION="None"
 
 run() {
-	local list=""
-	local prog=""
+    local list=""
+    local prog=""
 
-	fix_env
-	setup
+    fix_env
+    setup
 
-	for idx in "${SRT_DIR[@]}"; do
-		[ $(find ${idx} -type f | wc -l) != 0 ] \
-			&& sudo cp ${idx}/* ${SET_SRT_DIR}
-	done
+    for idx in "${SRT_DIR[@]}"; do
+        [ $(find ${idx} -type f | wc -l) != 0 ] \
+            && sudo cp ${idx}/* ${SET_SRT_DIR}
+    done
 
-	list=($(ls -A1 ${SET_SRT_DIR}))
-	for idx in "${list[@]}"; do
-		prog=${idx%%-*}
-		prog=${prog:1:2}
-		echo "processing... ${prog}%"
-		. ${SET_SRT_DIR}/${idx}
-		sleep ${SPEED}
-	done
+    list=($(ls -A1 ${SET_SRT_DIR}))
+    for idx in "${list[@]}"; do
+        prog=${idx%%-*}
+        prog=${prog:1:2}
+        echo "processing... ${prog}%"
+        . ${SET_SRT_DIR}/${idx}
+        sleep ${SPEED}
+    done
 
 }
 
@@ -87,3 +87,5 @@ run() {
 [ -d ${INSTALL_DIR} ] && rm -rf ${INSTALL_DIR}
 
 run
+
+# vim: set ft=sh ts=4 sw=4 expandtab

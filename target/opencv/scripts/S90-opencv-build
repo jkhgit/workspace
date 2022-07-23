@@ -11,8 +11,8 @@ cd opencv-${VERSION}
 mkdir build && cd build
 
 cmake -DCMAKE_BUILD_TYPE=RELEASE \
-	-DCMAKE_INSTALL_PREFIX=/usr/local \
-	-DINSTALL_PYTHON_EXAMPLES=ON \
+  -DCMAKE_INSTALL_PREFIX=/usr/local \
+  -DINSTALL_PYTHON_EXAMPLES=ON \
     -DOPENCV_GENERATE_PKGCONFIG=ON \
     -DOPENCV_EXTRA_MODULES_PATH=~/opencv_files/opencv_contrib/modules \
     -DBUILD_EXAMPLES=ON ..

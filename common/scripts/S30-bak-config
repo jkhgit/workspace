@@ -1,26 +1,26 @@
 #!/bin/bash
 
 bak_configs() {
-	local conf_list=""
+  local conf_list=""
 
-	conf_list=($(ls ${SET_CFG_DIR}))
-	[ ! -d ${BACKUP_DIR} ] && mkdir -p ${BACKUP_DIR}
+  conf_list=($(ls ${SET_CFG_DIR}))
+  [ ! -d ${BACKUP_DIR} ] && mkdir -p ${BACKUP_DIR}
 
-	for idx in ${conf_list[@]}; do
-		if [ -e ${HOME}/.${idx} ]; then
-			sudo cp ${HOME}/.${idx} ${BACKUP_DIR}/${idx}
-			echo ${idx} >> ${TMP_CFG_LIST}
-		fi
-	done
-	update_history "===== backup ====="
+  for idx in ${conf_list[@]}; do
+    if [ -e ${HOME}/.${idx} ]; then
+      sudo cp ${HOME}/.${idx} ${BACKUP_DIR}/${idx}
+      echo ${idx} >> ${TMP_CFG_LIST}
+    fi
+  done
+  update_history "===== backup ====="
 }
 
 if [ -d ${BACKUP_DIR} ]; then
-	echo "===== WARNING! There are backup files already. ====="
-	confirm "Do you still want to proceed with the backup? (Y/n)?" \
-		&& bak_configs
+  echo "===== WARNING! There are backup files already. ====="
+  confirm "Do you still want to proceed with the backup? (Y/n)?" \
+    && bak_configs
 else
-	bak_configs
+  bak_configs
 fi
 
 echo "backup configure... OK"

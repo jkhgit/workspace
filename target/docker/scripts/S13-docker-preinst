@@ -1,11 +1,11 @@
 #!/bin/bash
 
 if [ -x "$(command -v docker)" ]; then
-	sudo apt-get remove docker docker-engine docker.io containerd runc
+  sudo apt-get remove docker docker-engine docker.io containerd runc
 fi
 
 sudo apt-get install \
-		 ca-certificates \
-		 curl \
-		 gnupg \
-		 lsb-release
+     ca-certificates \
+     curl \
+     gnupg \
+     lsb-release

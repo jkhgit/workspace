@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ${VERSION} == "None" ]; then
-	VERSION=3
+  VERSION=3
 fi
 
 python3 -m pip install virtualenv

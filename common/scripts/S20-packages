@@ -1,13 +1,13 @@
 #!/bin/bash
 
 get_packages() {
-	local pkg_list
+  local pkg_list
 
-	for idx in "${PKG_TXT[@]}"; do
-		sudo cat ${idx} | tee -a ${SET_PKG_DIR}/packages > /dev/null 2>&1
-	done
-	pkg_list="$(cat ${SET_PKG_DIR}/packages | tr " " "\n" | sort | uniq | tr "\n" " ")"
-	echo ${pkg_list}
+  for idx in "${PKG_TXT[@]}"; do
+    sudo cat ${idx} | tee -a ${SET_PKG_DIR}/packages > /dev/null 2>&1
+  done
+  pkg_list="$(cat ${SET_PKG_DIR}/packages | tr " " "\n" | sort | uniq | tr "\n" " ")"
+  echo ${pkg_list}
 }
 
 PKGS=$(get_packages)

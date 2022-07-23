@@ -1,16 +1,16 @@
 #!/bin/bash
 
 set_config() {
-	local conf_list=""
+  local conf_list=""
 
-	conf_list=($(ls ${SET_CFG_DIR}))
-	for idx in ${conf_list[@]}; do
-		sudo cp ${SET_CFG_DIR}/${idx} ${HOME}/.${idx}
-		echo ${idx} >> ${TMP_CFG_LIST}
-	done
-	update_history "===== setup ====="
+  conf_list=($(ls ${SET_CFG_DIR}))
+  for idx in ${conf_list[@]}; do
+    sudo cp ${SET_CFG_DIR}/${idx} ${HOME}/.${idx}
+    echo ${idx} >> ${TMP_CFG_LIST}
+  done
+  update_history "===== setup ====="
 
-	echo "[C] configure setting... OK"
+  echo "[C] configure setting... OK"
 }
 
 set_config

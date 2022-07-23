@@ -3,25 +3,25 @@
 WS_DIR="$( cd "$( dirname ${TOP_DIR} )" && pwd -P )"/robot_ws
 
 if [ $(python3 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/') != 38 ]; then
-	echo " setting env python3 version: 3.8 ..."
-	exit 0
+  echo " setting env python3 version: 3.8 ..."
+  exit 0
 fi
 
 build_test() {
 
-	if [ -z $(find ${HOME} -name robot_ws) ]; then
-		source /opt/ros/foxy/setup.bash
-		mkdir -p ${WS_DIR}/src
-	fi
+  if [ -z $(find ${HOME} -name robot_ws) ]; then
+    source /opt/ros/foxy/setup.bash
+    mkdir -p ${WS_DIR}/src
+  fi
 
-	cd ${WS_DIR}
-	colcon build --symlink-install
+  cd ${WS_DIR}
+  colcon build --symlink-install
 }
 
 ros2_locales() {
-	sudo locale-gen en_US en_US.UTF-8
-	sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-	export LANG=en_US.UTF-8
+  sudo locale-gen en_US en_US.UTF-8
+  sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+  export LANG=en_US.UTF-8
 }
 
 ros2_locales
@@ -29,8 +29,8 @@ ros2_locales
 python3.8 -m pip install -U -r ${TOP_DIR}/target/${TARGET}/requirements
 
 sudo apt install --no-install-recommends -y \
-	libasio-dev \
-	libtinyxml2-dev \
-	libcunit1-dev
+  libasio-dev \
+  libtinyxml2-dev \
+  libcunit1-dev
 
 build_test

@@ -3,7 +3,7 @@
 set -e
 
 [ -z $(command -v curl) ] && \
-		sudo apt install -y curl
+    sudo apt install -y curl
 
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 

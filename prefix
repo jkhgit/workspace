@@ -23,8 +23,8 @@ _prefix() {
 
   foo=$(cat /etc/*-release | grep CODENAME)
   DISTRO=${foo##*=}
-  foo=$(cat /etc/*-release | grep RELEASE)
-  RELEASE=${foo##*=}
+  foo=$(cat /etc/*-release | grep VERSION)
+  OS_VER=${foo##*=}
 
   case ${DISTRO} in
     bionic | focal | jammy)
